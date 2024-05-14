@@ -2,11 +2,10 @@ import './index.css'
 import { useState } from 'react'
 import { materialTierChecker, itemTierChecker, isMaterial } from './checkers'
 
-type item = {
-  type: string,
+interface Item {
   name: string,
   tier: number,
-  amount: number
+  amount?: number
 }
 
 function App() {
@@ -32,12 +31,33 @@ const downloadCSV = (str: string) => {
   console.log(log)
 }
 
-const chestLogParser = (str: string): item[] => {
+const itemCounter = (items: Item[]): Item[] => {
+  let itemCount: Item[] = []
+  let itemName: Item[] = []
+
+  for (let i = 0; i < items.length; i++) {
+    if (!itemName.includes({ name: items[i].name, tier: items[i].tier })) {
+      itemName.push({ name: items[i].name, tier: items[i].tier })
+      itemCount.push(items[i])
+      continue
+    }
+
+    for (let j = 0; j < itemCount.length; j++) {
+      if (items[i].name == itemCount[j].name && items[i].tier == itemCount[j].tier) {
+        itemCount[j]!.amount += items[i]!.amount
+      }
+    }
+  }
+
+  return items
+}
+
+const chestLogParser = (str: string): Item[] => {
   let lines = str.split('\t')
   let gear: string[] = []
   let enchantment: number[] = []
   let amount: number[] = []
-  let items: item[] = []
+  let items: Item[] = []
 
   for (let i = 7; i < lines.length; i += 5) {
     gear.push(lines[i].replace(/"/g, ''))
@@ -54,19 +74,17 @@ const chestLogParser = (str: string): item[] => {
   for (let i = 0; i < gear.length; i++) {
     if (gear[i].endsWith('Cape')) {
       items.push({
-        type: 'Cape', name: gear[i],
+        name: gear[i],
         tier: enchantment[i] + itemTierChecker(gear[i]),
         amount: amount[i]
       })
     } else if (isMaterial(gear[i])) {
       items.push({
-        type: 'Material',
         name: gear[i],
         tier: materialTierChecker(gear[i]), amount: amount[i]
       })
     } else {
       items.push({
-        type: 'Gear',
         name: gear[i],
         tier: enchantment[i] + itemTierChecker(gear[i]), amount: amount[i]
       })
@@ -76,7 +94,7 @@ const chestLogParser = (str: string): item[] => {
   return (gearNameModifier(items))
 }
 
-const gearNameModifier = (arr: item[]) => {
+const gearNameModifier = (arr: Item[]) => {
   arr.forEach((item) => {
     item.name = item.name.split(' ').slice(1).join(' ')
   })
