@@ -1,5 +1,6 @@
 import './index.css'
 import { useState } from 'react'
+import { materialTierChecker, itemTierChecker } from './tierCheckers'
 
 type item = {
   type: string,
@@ -55,29 +56,8 @@ const chestLogParser = (str: string): typeof items => {
       items.push({ type: 'Gear', name: gear[i], tier: enchantment[i] + itemTierChecker(gear[i]), amount: amount[i] })
     }
   }
-
-  console.log(items)
-
   return items
+
 }
 
-const itemTierChecker = (str: string): number => {
-  if (str.startsWith('Novice')) {
-    return 2
-  } else if (str.startsWith('Journeyman')) {
-    return 3
-  } else if (str.startsWith('Adept')) {
-    return 4
-  } else if (str.startsWith('Expert')) {
-    return 5
-  } else if (str.startsWith('Master')) {
-    return 6
-  } else if (str.startsWith('Grandmaster')) {
-    return 7
-  } else if (str.startsWith('Elder')) {
-    return 8
-  } else {
-    return 0
-  }
-}
 export default App
