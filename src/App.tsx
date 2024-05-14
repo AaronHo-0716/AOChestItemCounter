@@ -29,28 +29,24 @@ function App() {
 const downloadCSV = (str: string) => {
   let log = chestLogParser(str)
   console.log(log)
+  const mergedItems = mergeItems(log);
+  console.log(mergedItems);
 }
 
-const itemCounter = (items: Item[]): Item[] => {
-  let itemCount: Item[] = []
-  let itemName: Item[] = []
+const mergeItems = (items: Item[]): Item[] => {
+  const itemMap: { [key: string]: Item } = {};
 
-  for (let i = 0; i < items.length; i++) {
-    if (!itemName.includes({ name: items[i].name, tier: items[i].tier })) {
-      itemName.push({ name: items[i].name, tier: items[i].tier })
-      itemCount.push(items[i])
-      continue
+  items.forEach(item => {
+    const key = `${item.name}-${item.tier}`;
+    if (!itemMap[key]) {
+      itemMap[key] = { ...item };
+    } else {
+      itemMap[key].amount += item.amount;
     }
+  });
 
-    for (let j = 0; j < itemCount.length; j++) {
-      if (items[i].name == itemCount[j].name && items[i].tier == itemCount[j].tier) {
-        itemCount[j]!.amount += items[i]!.amount
-      }
-    }
-  }
-
-  return items
-}
+  return Object.values(itemMap);
+};
 
 const chestLogParser = (str: string): Item[] => {
   let lines = str.split('\t')
