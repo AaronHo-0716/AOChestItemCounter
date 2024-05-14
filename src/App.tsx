@@ -18,7 +18,7 @@ function App() {
   return (
     <>
       <div className="flex flex-col h-screen justify-center items-center gap-2">
-        <h1 className="text-3xl">AOChestItemCounter</h1>
+        <h1 className="text-3xl">Albion Online Chest Item Counter</h1>
         <input id="log" className="text-xl border border-black p-4" placeholder='Paste the chest logs here...' onChange={handleChange} />
         <button className="border border-black p-4" onClick={() => downloadCSV(chestLog)}>Download CSV</button>
       </div>
@@ -27,25 +27,41 @@ function App() {
 }
 
 const downloadCSV = (str: string) => {
-  let log = chestLogParser(str)
-  console.log(log)
-  const mergedItems = mergeItems(log);
-  console.log(mergedItems);
+  const mergedItems = mergeItems(chestLogParser(str))
+
+  let csvContent = 'Name,Tier,Amount\r\n'
+
+  mergedItems.forEach(items => {
+    let item = `${items.name},${items.tier},${items.amount}`
+    csvContent += item + '\r\n'
+  })
+
+  var hiddenElement = document.createElement('a');
+  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvContent);
+  hiddenElement.target = '_blank';
+
+  //provide the name for the CSV file to be downloaded  
+  hiddenElement.download = 'albion.csv';
+  hiddenElement.click();
 }
 
 const mergeItems = (items: Item[]): Item[] => {
-  const itemMap: { [key: string]: Item } = {};
+  const itemMap: { [key: string]: Item } = {}
 
   items.forEach(item => {
-    const key = `${item.name}-${item.tier}`;
+    const key = `${item.name}-${item.tier}`
     if (!itemMap[key]) {
-      itemMap[key] = { ...item };
+      itemMap[key] = { ...item }
     } else {
-      itemMap[key].amount += item.amount;
+      itemMap[key].amount += item.amount
     }
   });
 
-  return Object.values(itemMap);
+  let filteredItem = Object.values(itemMap).filter(item => {
+    return item.amount != 0
+  })
+
+  return filteredItem;
 };
 
 const chestLogParser = (str: string): Item[] => {
