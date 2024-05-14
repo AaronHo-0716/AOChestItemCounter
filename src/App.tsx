@@ -93,7 +93,7 @@ const chestLogParser = (str: string): Item[] => {
     } else if (isMaterial(gear[i])) {
       items.push({
         name: gear[i],
-        tier: materialTierChecker(gear[i]), amount: amount[i]
+        tier: enchantment[i] + materialTierChecker(gear[i]), amount: amount[i]
       })
     } else {
       items.push({
