@@ -1,15 +1,15 @@
 {
-  "homepage": "https://aaronho-0716.github.io/AOChestItemCounter",
+  "homepage": "https://aaronho-0716.github.io/AOChestItemCounter/",
   "name": "aochestitemcounter",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "deploy": "gh-pages -d dist",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "gh-pages": "^6.1.1",
