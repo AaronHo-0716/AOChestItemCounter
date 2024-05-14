@@ -51,13 +51,33 @@ const chestLogParser = (str: string): typeof items => {
 
   for (let i = 0; i < gear.length; i++) {
     if (gear[i].endsWith('Cape')) {
-      items.push({ type: 'Cape', name: gear[i], tier: enchantment[i] + itemTierChecker(gear[i]), amount: amount[i] })
+      items.push({
+        type: 'Cape', name: gear[i],
+        tier: enchantment[i] + itemTierChecker(gear[i]),
+        amount: amount[i]
+      })
+    } else if (
+      gear[i].endsWith('Planks') ||
+      gear[i].endsWith('Block') ||
+      gear[i].endsWith('Leather') ||
+      gear[i].endsWith('Bar') ||
+      gear[i].endsWith('Cloth')) {
+      items.push({
+        type: 'Material',
+        name: gear[i],
+        tier: materialTierChecker(gear[i]), amount: amount[i]
+      })
     } else {
-      items.push({ type: 'Gear', name: gear[i], tier: enchantment[i] + itemTierChecker(gear[i]), amount: amount[i] })
+      items.push({
+        type: 'Gear',
+        name: gear[i],
+        tier: enchantment[i] + itemTierChecker(gear[i]), amount: amount[i]
+      })
     }
   }
-  return items
 
+  console.log(items)
+  return items
 }
 
 export default App
