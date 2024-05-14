@@ -119,3 +119,16 @@ export const itemTierChecker = (str: string): number => {
     return 0
   }
 }
+
+export const isMaterial = (str: string): boolean => {
+  if (
+    str.endsWith('Planks') ||
+    str.endsWith('Block') ||
+    str.endsWith('Leather') ||
+    str.endsWith('Bar') ||
+    str.endsWith('Cloth')) {
+    return true
+  } else {
+    return false
+  }
+}
