@@ -2,9 +2,16 @@ import './index.css'
 import { useState } from 'react'
 import { materialTierChecker, itemTierChecker, isMaterial } from './checkers'
 
-interface Item {
+type Item = {
   name: string,
   tier: number,
+  amount?: number
+}
+
+type Mats = {
+  name: string,
+  tier: number,
+  enchantment: number,
   amount?: number
 }
 
@@ -32,13 +39,23 @@ const downloadCSV = (str: string) => {
     alert("Input is empty!")
     return
   }
-  const mergedItems = mergeItems(chestLogParser(str))
 
-  let csvContent = 'Name,Tier,Amount\r\n'
+  let [items, materials] = chestLogParser(str)
 
-  mergedItems.forEach(items => {
+  let mergedItem = mergeItems(items)
+
+  let csvContent = 'Gears\r\nName,Tier,Amount\r\n'
+
+  mergedItem.forEach(items => {
     let item = `${items.name},${items.tier},${items.amount}`
     csvContent += item + '\r\n'
+  })
+
+  csvContent += '\r\nMaterials\r\nName,Tier,Amount\r\n'
+
+  materials.forEach(mats => {
+    let mat = `${mats.name},${mats.tier + '.' + mats.enchantment},${mats.amount}`
+    csvContent += mat + '\r\n'
   })
 
   var hiddenElement = document.createElement('a');
@@ -58,7 +75,7 @@ const mergeItems = (items: Item[]): Item[] => {
     if (!itemMap[key]) {
       itemMap[key] = { ...item }
     } else {
-      itemMap[key].amount += item.amount
+      itemMap[key].amount! += item.amount!
     }
   });
 
@@ -69,12 +86,13 @@ const mergeItems = (items: Item[]): Item[] => {
   return filteredItem;
 };
 
-const chestLogParser = (str: string): Item[] => {
+const chestLogParser = (str: string): [Item[], Mats[]] => {
   let lines = str.split('\t')
   let gear: string[] = []
   let enchantment: number[] = []
   let amount: number[] = []
   let items: Item[] = []
+  let materials: Mats[] = []
 
   for (let i = 7; i < lines.length; i += 5) {
     gear.push(lines[i].replace(/"/g, ''))
@@ -89,29 +107,26 @@ const chestLogParser = (str: string): Item[] => {
   }
 
   for (let i = 0; i < gear.length; i++) {
-    if (gear[i].endsWith('Cape')) {
+    if (isMaterial(gear[i])) {
+      materials.push({
+        name: gear[i],
+        enchantment: enchantment[i],
+        tier: materialTierChecker(gear[i]),
+        amount: amount[i]
+      })
+    } else {
       items.push({
         name: gear[i],
         tier: enchantment[i] + itemTierChecker(gear[i]),
         amount: amount[i]
       })
-    } else if (isMaterial(gear[i])) {
-      items.push({
-        name: gear[i],
-        tier: enchantment[i] + materialTierChecker(gear[i]), amount: amount[i]
-      })
-    } else {
-      items.push({
-        name: gear[i],
-        tier: enchantment[i] + itemTierChecker(gear[i]), amount: amount[i]
-      })
     }
   }
 
-  return (gearNameModifier(items))
+  return [gearNameModifier(items), materials]
 }
 
-const gearNameModifier = (arr: Item[]) => {
+const gearNameModifier = (arr: Item[]): Item[] => {
   arr.forEach((item) => {
     item.name = item.name.split(' ').slice(1).join(' ')
   })
