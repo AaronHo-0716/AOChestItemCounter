@@ -17,10 +17,11 @@ function App() {
 
   return (
     <>
-      <div className="flex flex-col h-screen justify-center items-center gap-2">
-        <h1 className="text-3xl">Albion Online Chest Item Counter</h1>
-        <input id="log" className="text-xl border border-black p-4" placeholder='Paste the chest logs here...' onChange={handleChange} />
-        <button className="border border-black p-4" onClick={() => downloadCSV(chestLog)}>Download CSV</button>
+      <div className="flex flex-col h-screen justify-center items-center gap-2 bg-[#1D2932]">
+        <img className="h-40" src="https://assets.albiononline.com/assets/images/header/logo.svg?cb=2.132.1" />
+        <h1 className="text-6xl font-extrabold text-white">Chest Item Counter</h1>
+        <input id="log" className="text-xl border border-black p-4 focus:outline outline-offset-2 outline-[#D02C27]" placeholder='Paste the chest logs here...' onChange={handleChange} />
+        <button className="bg-[#D02C27] text-xl text-white p-4" onClick={() => downloadCSV(chestLog)}>Download CSV</button>
       </div>
     </>
   )
