@@ -28,6 +28,10 @@ function App() {
 }
 
 const downloadCSV = (str: string) => {
+  if (str == '') {
+    alert("Input is empty!")
+    return
+  }
   const mergedItems = mergeItems(chestLogParser(str))
 
   let csvContent = 'Name,Tier,Amount\r\n'
