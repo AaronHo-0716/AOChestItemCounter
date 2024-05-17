@@ -1,5 +1,8 @@
 export const materialTierChecker = (str: string): number => {
   if (str.endsWith('Planks')) {
+    if (materialInitialTierChecker(str)) {
+      str = str.split(' ').slice(1).join(' ')
+    }
     switch (str.split(' ')[0]) {
       case 'Birch':
         return 2
@@ -19,6 +22,9 @@ export const materialTierChecker = (str: string): number => {
         return 0
     }
   } else if (str.endsWith('Block')) {
+    if (materialInitialTierChecker(str)) {
+      str = str.split(' ').slice(1).join(' ')
+    }
     switch (str.split(' ')[0]) {
       case 'Limestone':
         return 2
@@ -38,6 +44,9 @@ export const materialTierChecker = (str: string): number => {
         return 0
     }
   } else if (str.endsWith('Leather')) {
+    if (materialInitialTierChecker(str)) {
+      str = str.split(' ').slice(1).join(' ')
+    }
     switch (str.split(' ')[0]) {
       case 'Stiff':
         return 2
@@ -57,6 +66,9 @@ export const materialTierChecker = (str: string): number => {
         return 0
     }
   } else if (str.endsWith('Bar')) {
+    if (materialInitialTierChecker(str)) {
+      str = str.split(' ').slice(1).join(' ')
+    }
     switch (str.split(' ')[0]) {
       case 'Copper':
         return 2
@@ -76,6 +88,9 @@ export const materialTierChecker = (str: string): number => {
         return 0
     }
   } else if (str.endsWith('Cloth')) {
+    if (materialInitialTierChecker(str)) {
+      str = str.split(' ').slice(1).join(' ')
+    }
     switch (str.split(' ')[0]) {
       case 'Simple':
         return 2
@@ -127,6 +142,19 @@ export const isMaterial = (str: string): boolean => {
     str.endsWith('Leather') ||
     str.endsWith('Bar') ||
     str.endsWith('Cloth')) {
+    return true
+  } else {
+    return false
+  }
+}
+
+const materialInitialTierChecker = (str: string): boolean => {
+  if (
+    str.startsWith("Uncommon") ||
+    str.startsWith("Rare") ||
+    str.startsWith("Exceptional") ||
+    str.startsWith("Pristine")
+  ) {
     return true
   } else {
     return false
